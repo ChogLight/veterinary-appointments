@@ -1,12 +1,18 @@
-import { useState } from 'react'
-
+import Header from "./Components/Header"
+import Form from "./Components/Form"
+import PatientList from "./Components/PatientList"
 function App() {
-  const [count, setCount] = useState(0)
 
   return (
-    <div className="App">
-      <h1>Hola Mundo</h1>
+    <div className="container mx-auto mt-20">
+      <Header/>
+      <div className="mt-12 md:flex">
+        <Form/>
+        <PatientList/>
+      </div>
+      
     </div>
+    
   )
 }
 
