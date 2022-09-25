@@ -2,7 +2,7 @@ import {useState, useEffect} from 'react'
 import Patient from './Patient'
 import Error from './Error'
 
-function Form({patients, setPatients}) {
+function Form({patients, setPatients, patient, setPatient}) {
 
   const [petName, setPetName] = useState('')
   const [ownerName, setOwnerName] = useState('')
@@ -11,6 +11,16 @@ function Form({patients, setPatients}) {
   const [symptoms, setSymptoms] = useState('')
   const [error, setError] = useState(false)
 
+  useEffect(() => {
+    if( Object.keys(patient).length > 0 ){
+      setPetName(patient.petName)
+      setOwnerName(patient.ownerName)
+      setEmail(patient.email)
+      setDischargeDate(patient.dischargeDate)
+      setSymptoms(patient.symptoms)
+    }
+
+  },[patient])
 
   const generateId = () => {
     const random = Math.random().toString(32).substring(2)
@@ -27,16 +37,31 @@ function Form({patients, setPatients}) {
     }
     else{
       setError(false)
+      //Patient object
       const patientObject = {
         petName,
         ownerName,
         email,
         dischargeDate,
-        symptoms,
-        id: generateId()
+        symptoms
+      }
+
+      if(patient.id){
+        //Editing Record
+        patientObject.id = patient.id
+        const updatedPatients = patients.map(patientState =>
+          patientState.id === patient.id ? patientObject : patientState
+        )
+        setPatients(updatedPatients)
+        setPatient({})
+      }
+      else{
+        //New Record
+        patientObject.id = generateId()
+        setPatients([...patients, patientObject])
       }
   
-      setPatients([...patients, patientObject])
+      //Reset Form
       setPetName('')
       setOwnerName('')
       setDischargeDate('')
@@ -154,7 +179,7 @@ function Form({patients, setPatients}) {
         <input
           type = "submit"
           className = "bg-indigo-600 w-full p-3 text-white uppercase font-bold hover:bg-indigo-700 cursor-pointer transition-colors"
-          value = "Add Patient"
+          value = {patient.id ? 'Edit patient' : 'Add patient'}
 
         />
 
